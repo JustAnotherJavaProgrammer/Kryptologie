@@ -1,0 +1,9 @@
+package caesar;
+
+public enum CaesarMode {
+	MODE_UPPER_ONLY,
+	MODE_UPPER_SPACE,
+	MODE_CASE_SENSITIVE,
+	MODE_CASE_SENSITIVE_SPACE,
+	MODE_UNIVERSAL
+}
