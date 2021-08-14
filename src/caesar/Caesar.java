@@ -1,19 +1,27 @@
 package caesar;
 
+import util.AlphabetMode;
 import util.Arrays;
+import util.Sanitizer;
+import util.Sanitizer.SanitizeResult;
 
 public class Caesar {
-	public final CaesarMode mode;
+	public final AlphabetMode mode;
 	private char[] allowedChars = {};
 	private int key = 0;
 
-	public Caesar(CaesarMode mode) {
+	public Caesar(AlphabetMode mode) {
 		this.mode = mode;
-		this.allowedChars = CaesarMode.getAllowedChars(mode);
+		this.allowedChars = AlphabetMode.getAllowedChars(mode);
 	}
 
 	public String encrypt(String plaintext) {
-		return crypt(plaintext, key);
+		SanitizeResult sanitized = Sanitizer.sanitize(plaintext, mode);
+		if (sanitized.changed)
+			System.err.println(
+					"WARNING: The plaintext contained letters that are unsupported by your chosen AlphabetMode "
+							+ "and was therefore changed to only use supported characters.");
+		return crypt(sanitized.result, key);
 	}
 
 	public String decrypt(String cyphertext) {
@@ -23,10 +31,15 @@ public class Caesar {
 	private String crypt(String text, int key) {
 		StringBuilder result = new StringBuilder(text);
 		for (int i = 0; i < result.length(); i++) {
-			result.setCharAt(i, allowedChars[(Arrays.indexInCharArray(allowedChars, result.charAt(i)) + key)
-					% allowedChars.length]);
+//			result.setCharAt(i, allowedChars[(Arrays.indexInCharArray(allowedChars, result.charAt(i)) + key)
+//					% allowedChars.length]);
+			result.setCharAt(i, Caesar.shift(result.charAt(i), key, allowedChars));
 		}
 		return result.toString();
+	}
+
+	public static char shift(char c, int key, char[] allowedChars) {
+		return allowedChars[(Arrays.indexInCharArray(allowedChars, c) + key) % allowedChars.length];
 	}
 
 	public int getKey() {
@@ -37,16 +50,4 @@ public class Caesar {
 		this.key = key;
 	}
 
-	protected SanitizeResult sanitize(String text) {
-		if (mode == CaesarMode.MODE_UNIVERSAL)
-			return new SanitizeResult(false, text);
-		String result = text;
-		if (mode == CaesarMode.MODE_UPPER_SPACE || mode == CaesarMode.MODE_CASE_SENSITIVE_SPACE)
-			result = result.replaceAll("[^a-zA-Z ]", "");
-		if (mode == CaesarMode.MODE_CASE_SENSITIVE || mode == CaesarMode.MODE_UPPER_ONLY)
-			result = result.replaceAll("[^a-zA-Z]", "");
-		if (mode == CaesarMode.MODE_UPPER_ONLY || mode == CaesarMode.MODE_UPPER_SPACE)
-			result = result.toUpperCase();
-		return new SanitizeResult(result.equals(text), result);
-	}
 }

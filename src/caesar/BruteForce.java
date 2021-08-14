@@ -1,10 +1,10 @@
 package caesar;
 
-import java.util.ArrayList;
+import util.AlphabetMode;
 
 public class BruteForce {
 	public static void main(String[] args) {
-		String[] options = generateOptions("Jcnnq\"Ygnv#", CaesarMode.MODE_UNIVERSAL);
+		String[] options = generateOptions("Jcnnq\"Ygnv#", AlphabetMode.MODE_UNIVERSAL);
 		for (int i = 0; i < options.length; i++) {
 			System.out.print("Key: ");
 			System.out.print(i);
@@ -13,8 +13,8 @@ public class BruteForce {
 		}
 	}
 
-	public static String[] generateOptions(String cyphertext, CaesarMode mode) {
-		String[] options = new String[CaesarMode.getAllowedChars(mode).length];
+	public static String[] generateOptions(String cyphertext, AlphabetMode mode) {
+		String[] options = new String[AlphabetMode.getAllowedChars(mode).length];
 		Caesar caesar = new Caesar(mode);
 		for (int i = 0; i < options.length; i++) {
 			caesar.setKey(i);
