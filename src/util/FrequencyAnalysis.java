@@ -6,7 +6,7 @@ import java.util.Comparator;
 public class FrequencyAnalysis {
 
 	public static void main(String[] args) {
-		String str = "Jcnnq\"Ygnv#";
+		String str = "Hello world!";
 		System.out.println("Analyzing \"" + str + "\":");
 		System.out.println("code\tchar\tabs. f.\trel. freq.");
 		for (CharFreqPair pair : analyze(str)) {

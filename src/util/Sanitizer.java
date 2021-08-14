@@ -17,7 +17,7 @@ public class Sanitizer {
 			i--;
 		}
 		String builtResult = result.toString();
-		return new SanitizeResult(builtResult.equals(text), builtResult);
+		return new SanitizeResult(!builtResult.equals(text), builtResult);
 	}
 
 	public static class SanitizeResult {

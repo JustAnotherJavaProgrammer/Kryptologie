@@ -3,8 +3,6 @@ package caesar;
 import util.AlphabetMode;
 import util.Arrays;
 import util.Cipher;
-import util.Sanitizer;
-import util.Sanitizer.SanitizeResult;
 
 public class Caesar extends Cipher {
 	public Caesar(AlphabetMode mode) {
@@ -14,16 +12,11 @@ public class Caesar extends Cipher {
 	private int key = 0;
 
 	public String encrypt(String plaintext) {
-		SanitizeResult sanitized = Sanitizer.sanitize(plaintext, mode);
-		if (sanitized.changed)
-			System.err.println(
-					"WARNING: The plaintext contained letters that are unsupported by your chosen AlphabetMode "
-							+ "and was therefore changed to only use supported characters.");
-		return crypt(sanitized.result, key);
+		return crypt(sanitizePlaintext(plaintext), key);
 	}
 
-	public String decrypt(String cyphertext) {
-		return crypt(cyphertext, allowedChars.length - (key % allowedChars.length));
+	public String decrypt(String ciphertext) {
+		return crypt(ciphertext, allowedChars.length - (key % allowedChars.length));
 	}
 
 	private String crypt(String text, int key) {

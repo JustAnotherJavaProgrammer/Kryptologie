@@ -26,7 +26,7 @@ public enum AlphabetMode {
 			if (mode == AlphabetMode.MODE_UPPER_ONLY || mode == AlphabetMode.MODE_UPPER_SPACE)
 				break;
 //			for (int i = 97; i < 123; i++) {
-			for (char c : charsFromTo(67, 123)) {
+			for (char c : charsFromTo(97, 123)) {
 				vals.add(c);
 			}
 			break;
