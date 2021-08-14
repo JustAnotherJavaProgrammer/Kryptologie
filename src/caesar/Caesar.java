@@ -2,18 +2,16 @@ package caesar;
 
 import util.AlphabetMode;
 import util.Arrays;
+import util.Cipher;
 import util.Sanitizer;
 import util.Sanitizer.SanitizeResult;
 
-public class Caesar {
-	public final AlphabetMode mode;
-	private char[] allowedChars = {};
-	private int key = 0;
-
+public class Caesar extends Cipher {
 	public Caesar(AlphabetMode mode) {
-		this.mode = mode;
-		this.allowedChars = AlphabetMode.getAllowedChars(mode);
+		super(mode);
 	}
+
+	private int key = 0;
 
 	public String encrypt(String plaintext) {
 		SanitizeResult sanitized = Sanitizer.sanitize(plaintext, mode);
