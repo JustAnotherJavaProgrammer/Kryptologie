@@ -11,7 +11,7 @@ public class RandomKeyGenerator {
 		if (csprng != null)
 			return;
 		try {
-			csprng = SecureRandom.getInstance("NativeRNG");
+			csprng = SecureRandom.getInstance("NativePRNG");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			csprng = new SecureRandom();
