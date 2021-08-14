@@ -8,8 +8,8 @@ import util.Sanitizer;
 import util.Sanitizer.SanitizeResult;
 
 public class Vigenere extends Cipher {
-	private String key;
-	private String keyInverted;
+	protected String key;
+	protected String keyInverted;
 
 	public Vigenere(AlphabetMode mode) {
 		super(mode);
