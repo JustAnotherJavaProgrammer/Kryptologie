@@ -1,5 +1,7 @@
 package otp;
 
+import java.io.Serializable;
+
 import util.AlphabetMode;
 import util.Arrays;
 import util.Cipher;
@@ -77,7 +79,11 @@ public class OTP extends Cipher {
 		return keyBuilder.toString();
 	}
 
-	public static class KeyCiphertextPair {
+	public static class KeyCiphertextPair implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1005551225133356972L;
 		public final String key;
 		public final String ciphertext;
 
