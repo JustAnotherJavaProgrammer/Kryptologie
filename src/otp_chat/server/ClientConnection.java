@@ -15,13 +15,20 @@ public class ClientConnection implements Runnable {
 	private final Server server;
 	private final Socket socket;
 	private final ObjectOutputStream out;
+	private final ObjectInputStream in;
 
-	public ClientConnection(String nickname, Socket sock, Server server) throws IOException {
+	public ClientConnection(Socket sock, Server server) throws IOException, ClassNotFoundException {
 		this.server = server;
 		this.socket = sock;
-		this.nickname = nickname;
 		this.out = new ObjectOutputStream(sock.getOutputStream());
-
+		this.in = new ObjectInputStream(socket.getInputStream());
+		this.nickname = (String) in.readObject();
+		for(ClientConnection conn : server.connections) {
+			if(conn.nickname.equals(this.nickname)) {
+				this.socket.close();
+				break;
+			}
+		}
 		this.thread = new Thread(this);
 		this.thread.start();
 	}
@@ -29,18 +36,8 @@ public class ClientConnection implements Runnable {
 	@Override
 	public void run() {
 		try {
-			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			while (socket.isConnected() && !Thread.interrupted()) {
-				switch (in.read()) {
-				case 0:
-					server.broadcast((OTPMessage) in.readObject());
-					break;
-				case 1:
-					sendNicknames();
-					break;
-				default:
-					break;
-				}
+				server.broadcast((OTPMessage) in.readObject());
 			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -63,20 +60,21 @@ public class ClientConnection implements Runnable {
 		for (int i = 0; i < nicknames.length; i++) {
 			nicknames[i] = server.connections.get(i).nickname;
 		}
-		out.write(1);
-		out.writeObject(nicknames);
+		writeObject(nicknames);
+	}
+	
+	private synchronized void writeObject(Object obj) throws IOException {
+		out.writeObject(obj);
 		out.flush();
 	}
 
 	public boolean send(OTPMessage message) throws IOException {
-		out.write(0);
 		boolean hasPersonalizedKey = message.personalizedKeys.containsKey(nickname);
 		ReceivedMessage mess = hasPersonalizedKey
 				? new ReceivedMessage(message.personalizedKeys.get(nickname), message.ciphertext, message.alphabet,
 						nickname)
 				: new ReceivedMessage(message.key, message.ciphertext, message.alphabet, nickname);
-		out.writeObject(mess);
-		out.flush();
+		writeObject(mess);
 		return hasPersonalizedKey;
 	}
 

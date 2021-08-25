@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 public class Headless_Server {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Server serv = new Server(4444, new ConnectionListener() {
 
 			@Override

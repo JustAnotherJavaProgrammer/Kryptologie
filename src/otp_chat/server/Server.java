@@ -1,8 +1,6 @@
 package otp_chat.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -23,12 +21,10 @@ public class Server {
 		this.servSock = new ServerSocket(port);
 	}
 
-	public void start() throws IOException {
+	public void start() throws IOException, ClassNotFoundException {
 		while (!Thread.interrupted()) {
 			Socket conn = servSock.accept();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String nick = reader.readLine();
-			ClientConnection cCon = new ClientConnection(nick, conn, this);
+			ClientConnection cCon = new ClientConnection(conn, this);
 			connections.add(cCon);
 			listener.onConnect(cCon);
 			broadcastNicknames();
