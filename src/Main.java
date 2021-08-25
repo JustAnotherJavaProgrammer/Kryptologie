@@ -1,11 +1,13 @@
-import util.GGT;
+import util.Euler;
+import util.GCD;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(GGT.ggt(20, 2));
-		System.out.println(GGT.euclid(20, 2));
-		System.out.println(Math.pow(1001l, 125l)%2881l);
+		for(int i = 1; i <= 100; i++) {
+			if(Euler.isPrime(i))
+				System.out.println(i);
+		}
 	}
 
 }

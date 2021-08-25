@@ -33,13 +33,8 @@ public class ClientConnection implements Runnable {
 				case 0:
 					server.broadcast((OTPMessage) in.readObject());
 					break;
-				case 1: {
-					String[] nicknames = new String[server.connections.size()];
-					for (int i = 0; i < nicknames.length; i++) {
-						nicknames[i] = server.connections.get(i).nickname;
-					}
-					new ObjectOutputStream(socket.getOutputStream()).writeObject(nicknames);
-				}
+				case 1: 
+					sendNicknames();
 					break;
 				default:
 					break;
@@ -55,13 +50,26 @@ public class ClientConnection implements Runnable {
 		}
 		server.disconnected(this);
 	}
+	
+	public void disconnect() throws IOException {
+		socket.close();
+		server.disconnected(this);
+	}
+	
+	public void sendNicknames() throws IOException {
+		String[] nicknames = new String[server.connections.size()];
+		for (int i = 0; i < nicknames.length; i++) {
+			nicknames[i] = server.connections.get(i).nickname;
+		}
+		new ObjectOutputStream(socket.getOutputStream()).writeObject(nicknames);
+	}
 
 	public boolean send(OTPMessage message) throws IOException {
 		socket.getOutputStream().write(0);
 		boolean hasPersonalizedKey = message.personalizedKeys.containsKey(nickname);
 		ReceivedMessage mess = hasPersonalizedKey
-				? new ReceivedMessage(message.personalizedKeys.get(nickname), message.ciphertext, message.alphabet)
-				: new ReceivedMessage(message.key, message.ciphertext, message.alphabet);
+				? new ReceivedMessage(message.personalizedKeys.get(nickname), message.ciphertext, message.alphabet, nickname)
+				: new ReceivedMessage(message.key, message.ciphertext, message.alphabet, nickname);
 		new ObjectOutputStream(socket.getOutputStream()).writeObject(mess);
 		return hasPersonalizedKey;
 	}

@@ -22,6 +22,11 @@ public class RandomKeyGenerator {
 		initCspring();
 		return csprng.nextInt(maxVal);
 	}
+	
+	public static long generateLongKey() {
+		initCspring();
+		return csprng.nextLong();
+	}
 
 	public static String generateKey(int length, char[] allowedChars) {
 		initCspring();

@@ -14,24 +14,26 @@ import otp_chat.OTPMessage;
 public class Server {
 	public final int port;
 	private final ConnectionListener listener;
+	public final ServerSocket servSock;
 	List<ClientConnection> connections = Collections.synchronizedList(new ArrayList<>());
 
-	public Server(int port, ConnectionListener listener) {
+	public Server(int port, ConnectionListener listener) throws IOException {
 		this.port = port;
 		this.listener = listener;
+		this.servSock = new ServerSocket(port);
 	}
 
 	public void start() throws IOException {
-		ServerSocket s = new ServerSocket(port);
 		while (!Thread.interrupted()) {
-			Socket conn = s.accept();
+			Socket conn = servSock.accept();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String nick = reader.readLine();
 			ClientConnection cCon = new ClientConnection(nick, conn, this);
 			connections.add(cCon);
 			listener.onConnect(cCon);
+			broadcastNicknames();
 		}
-		s.close();
+		servSock.close();
 	}
 
 	public void broadcast(OTPMessage message) {
@@ -44,10 +46,21 @@ public class Server {
 			}
 		}
 	}
+	
+	public void broadcastNicknames() {
+		for(ClientConnection conn : connections) {
+			try {
+				conn.sendNicknames();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void disconnected(ClientConnection conn) {
 		connections.remove(conn);
 		listener.onDisconnect(conn);
+		broadcastNicknames();
 	}
 
 	public ClientConnection[] getConnections() {

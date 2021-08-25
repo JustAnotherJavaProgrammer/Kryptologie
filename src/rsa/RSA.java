@@ -4,6 +4,8 @@ import java.math.BigInteger;
 
 import util.AlphabetMode;
 import util.Cipher;
+import util.Euler;
+import util.RandomKeyGenerator;
 
 public class RSA extends Cipher {
 	private long key = 0;
@@ -23,18 +25,44 @@ public class RSA extends Cipher {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	private BigInteger crypt(BigInteger val, BigInteger ed, BigInteger n) {
+		return val.modPow(ed, n);
+	}
+
+	private BigInteger crypt(long val, long ed, long n) {
+		return crypt(new BigInteger(Long.toString(val)), new BigInteger(Long.toString(ed)),
+				new BigInteger(Long.toString(n)));
+	}
+
+	private long cryptLong(long val, long ed, long n) {
+		return crypt(val, ed, n).longValue();
+	}
+
+	public BigInteger decrypt(BigInteger c, BigInteger d, BigInteger n) {
+		return crypt(c, d, n);
+	}
+
+	public BigInteger decrypt(long c, long d, long n) {
+		return crypt(c, d, n);
+	}
+
+	public long decryptLong(long c, long d, long n) {
+		return cryptLong(c, d, n);
+	}
+
 	public BigInteger encrypt(BigInteger w, BigInteger e, BigInteger n) {
-		return w.modPow(e, n);
+		return crypt(w, e, n);
 	}
+
 	public BigInteger encrypt(long w, long e, long n) {
-		return encrypt(new BigInteger(Long.toString(w)), new BigInteger(Long.toString(e)), new BigInteger(Long.toString(n)));
+		return crypt(w, e, n);
 	}
-	
+
 	public long encryptLong(long w, long e, long n) {
-		return encrypt(w,e,n).longValue();
+		return cryptLong(w, e, n);
 	}
-	
+
 //	public long encrypt(long w, long e, long n) {
 //		return longPow(w, e) % n;
 //	}
@@ -46,9 +74,17 @@ public class RSA extends Cipher {
 //		}
 //		return res;
 //	}
-	
+
 	public void setKey(long key) {
 		this.key = key;
+	}
+	
+	public static long generatePrime(long min, long max) {
+		long val;
+		do {
+			val = RandomKeyGenerator.generateLongKey();
+		} while(val < min || val >= max || !Euler.isPrime(val));
+		return val;
 	}
 
 }
