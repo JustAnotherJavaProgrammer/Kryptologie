@@ -14,11 +14,13 @@ public class ClientConnection implements Runnable {
 	public final String nickname;
 	private final Server server;
 	private final Socket socket;
+	private final ObjectOutputStream out;
 
-	public ClientConnection(String nickname, Socket sock, Server server) {
+	public ClientConnection(String nickname, Socket sock, Server server) throws IOException {
 		this.server = server;
 		this.socket = sock;
 		this.nickname = nickname;
+		this.out = new ObjectOutputStream(sock.getOutputStream());
 
 		this.thread = new Thread(this);
 		this.thread.start();
@@ -33,7 +35,7 @@ public class ClientConnection implements Runnable {
 				case 0:
 					server.broadcast((OTPMessage) in.readObject());
 					break;
-				case 1: 
+				case 1:
 					sendNicknames();
 					break;
 				default:
@@ -50,27 +52,31 @@ public class ClientConnection implements Runnable {
 		}
 		server.disconnected(this);
 	}
-	
+
 	public void disconnect() throws IOException {
 		socket.close();
 		server.disconnected(this);
 	}
-	
+
 	public void sendNicknames() throws IOException {
 		String[] nicknames = new String[server.connections.size()];
 		for (int i = 0; i < nicknames.length; i++) {
 			nicknames[i] = server.connections.get(i).nickname;
 		}
-		new ObjectOutputStream(socket.getOutputStream()).writeObject(nicknames);
+		out.write(1);
+		out.writeObject(nicknames);
+		out.flush();
 	}
 
 	public boolean send(OTPMessage message) throws IOException {
-		socket.getOutputStream().write(0);
+		out.write(0);
 		boolean hasPersonalizedKey = message.personalizedKeys.containsKey(nickname);
 		ReceivedMessage mess = hasPersonalizedKey
-				? new ReceivedMessage(message.personalizedKeys.get(nickname), message.ciphertext, message.alphabet, nickname)
+				? new ReceivedMessage(message.personalizedKeys.get(nickname), message.ciphertext, message.alphabet,
+						nickname)
 				: new ReceivedMessage(message.key, message.ciphertext, message.alphabet, nickname);
-		new ObjectOutputStream(socket.getOutputStream()).writeObject(mess);
+		out.writeObject(mess);
+		out.flush();
 		return hasPersonalizedKey;
 	}
 
