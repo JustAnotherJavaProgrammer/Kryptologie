@@ -40,7 +40,7 @@ public class MessageView extends JPanel {
 		CategoryValueView ciphertextView = new CategoryValueView("Ciphertext", message.ciphertext);
 		extendedView.add(ciphertextView);
 
-		CategoryValueView keyView = new CategoryValueView("Key", message.ciphertext);
+		CategoryValueView keyView = new CategoryValueView("Key", message.key);
 		extendedView.add(keyView);
 
 	}
