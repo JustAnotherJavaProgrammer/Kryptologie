@@ -8,4 +8,13 @@ public class Arrays {
 		}
 		return -1;
 	}
+
+	public static boolean contains(Object[] arr, Object obj) {
+		for (Object element : arr) {
+			if (element.equals(obj)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

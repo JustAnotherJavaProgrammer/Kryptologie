@@ -72,8 +72,8 @@ public class ClientConnection implements Runnable {
 		boolean hasPersonalizedKey = message.personalizedKeys.containsKey(nickname);
 		ReceivedMessage mess = hasPersonalizedKey
 				? new ReceivedMessage(message.personalizedKeys.get(nickname), message.ciphertext, message.alphabet,
-						nickname)
-				: new ReceivedMessage(message.key, message.ciphertext, message.alphabet, nickname);
+						message.nickname)
+				: new ReceivedMessage(message.key, message.ciphertext, message.alphabet, message.nickname);
 		writeObject(mess);
 		return hasPersonalizedKey;
 	}

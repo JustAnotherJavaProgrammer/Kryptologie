@@ -56,5 +56,9 @@ public class GUI {
 	protected JFrame getFrame() {
 		return frame;
 	}
+	
+	public boolean hasFocus() {
+		return frame.isFocused();
+	}
 
 }
