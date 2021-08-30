@@ -42,7 +42,7 @@ public class FrequencyAnalysis {
 		return chars.toArray(result);
 	}
 
-	static class CharFreqPair {
+	public static class CharFreqPair {
 		public char character;
 		public int absoluteFrequency;
 		public double relativeFrequency;

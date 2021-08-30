@@ -126,13 +126,14 @@ public class ChatPanel extends JPanel {
 						if (gui.hasFocus()) {
 							AudioPlayer.getInstance().play("in_focus.wav");
 						} else {
-							AudioPlayer.getInstance().play("in_background_" + RandomKeyGenerator.generateNumKey(3)+".wav");
+							AudioPlayer.getInstance()
+									.play("in_background_" + RandomKeyGenerator.generateNumKey(3) + ".wav");
 						}
 						pnlMessages.add(new JSeparator(JSeparator.HORIZONTAL), constraints,
 								pnlMessages.getComponentCount() - 1);
 						pnlMessages.add(
 								new MessageView(mess,
-										otpInstances.getOrDefault(mess.alphabet, defaultOTP).decrypt(mess)),
+										otpInstances.getOrDefault(mess.alphabet, defaultOTP).decrypt(mess), true),
 								constraints, pnlMessages.getComponentCount() - 1);
 						JScrollBar scrollBar = messageScroller.getVerticalScrollBar();
 						scrollBar.setValue(scrollBar.getMaximum());
