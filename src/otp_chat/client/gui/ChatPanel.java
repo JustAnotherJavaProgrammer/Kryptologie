@@ -98,6 +98,7 @@ public class ChatPanel extends JPanel {
 					if (!Arrays.contains(nicks, nick))
 						removed.add(nick);
 				}
+				nickList = nicks;
 				EventQueue.invokeLater(new Runnable() {
 
 					@Override
